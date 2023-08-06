@@ -99,7 +99,7 @@ footer{
 /* product cards */
 :root {
   --cardWidth: 240px;
-  --cardHeight: 280px;
+/*  --cardHeight: 280px;*/
   --cardMargin: 16px;
 }
 
@@ -111,7 +111,7 @@ footer{
 
 .product_card{
   width: var(--cardWidth);
-  height: var(--cardHeight);
+/*  height: var(--cardHeight);*/
   margin: var(--cardMargin);
   border: 1px solid #ccc;
   border-radius: 8px;

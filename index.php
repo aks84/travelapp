@@ -1,6 +1,9 @@
 <?php
-session_start();
+@session_start();
+$ip = $_SERVER['REMOTE_ADDR'];
 $db = new mysqli('localhost', 'root', '', 'travelapp');
+
+
 
 // Check for errors
 if (mysqli_connect_errno()) {
@@ -12,7 +15,9 @@ if (empty($_SESSION['cart_items'])) {
 	$_SESSION['cart_items'] = array();
 }
 
-array_push($_SESSION['cart_items'], isset($_POST['add_to_cart']));
+// array_push($_SESSION['cart_items'], isset($_POST['add_to_cart']));
+
+
 
 ?>
 
@@ -59,6 +64,7 @@ array_push($_SESSION['cart_items'], isset($_POST['add_to_cart']));
 				<h2>Visible only on cart-click</h2>
 				<h2>Visible only on cart-click</h2>
 				<div class="empty_cart"><input type="submit" value="Empty Cart"></div>
+
 			</div>
 	<main>
 <section class="search_products">
@@ -104,6 +110,26 @@ array_push($_SESSION['cart_items'], isset($_POST['add_to_cart']));
 	</form>
 </section>
 
+<?php 
+
+if (!empty($_POST['product_quantity'])) {
+	if (isset($_POST['add_to_cart'])) {
+		$current_id = $_POST['product_id'];
+		$current_q = $_POST['product_quantity'];
+
+		$cart_insertable = $db->query("SELECT * FROM travels WHERE id={$current_id}");
+		while ($cart_row = $cart_insertable->fetch_assoc()) { 
+			echo ucwords("Title: {$cart_row['froms']} to {$cart_row['tos']} {$cart_row['vehicle_type']}")." <br> Price: {$cart_row['price']} <br> Quantity:  $current_q  <br> Total Price: ". ($cart_row['price'] * $current_q) + 100 ."<br>";
+			array_push($_SESSION['cart_items']);
+		}
+		
+		echo "You clicked travel ID : {$current_id} and quantity was : {$current_q} <br>";
+	}
+
+}
+
+ ?>
+
 <section class="all_products">
    <?php 
    $rows = $db->query("SELECT * FROM `travels` ORDER BY id ASC");
@@ -111,21 +137,33 @@ array_push($_SESSION['cart_items'], isset($_POST['add_to_cart']));
   <div class="product_card">
   	<h3 class="product_title"><?php echo ucwords("{$row["froms"]} to {$row["tos"]} {$row["vehicle_type"]}"); ?></h3>
      <img src="img/<?php echo $row["thumbnail"];?>"/>
-     <div class="card_details">
+
+     <form class="card_details" method="POST" action="index.php">
 	     <p><b>Departures:</b> <?php echo $row["d_date"];?></p>
 	     <p><b>Arrives:</b> <?php echo $row["a_date"];?></p>
 	     <p><b>For:</b> <?php echo $row["persons"];?> Persons</p>
 	     <h3 class="card_price">&#8377; <?php echo $row["price"];?></h3>
 	     <input type="number" name="product_quantity" min="1" max="10" value="1">
-	     <input type="hidden" name="product_price" value="<?php echo $row["price"];?>">
+	     <input type="hidden" name="product_id" value="<?php echo $row["id"];?>">
+	     <!-- <input type="hidden" name="product_price" value="<?php echo $row["price"];?>"> -->
 	     <input type="submit" name="add_to_cart" value="Add to Cart">
-     </div>
+     </form>
+
    </div>
    <?php } ?>
 
 </section>
 
 	</main>
+
+
+	<?php 
+
+print_r($_SESSION['cart_items']);
+// unset($_SESSION['cart_items']); ?>
+
+
+
 	<footer>
 		<div class="copyright">
 			<p>&copy; 2020-2023 @travelapp - all rights reserved.</p>
@@ -141,6 +179,6 @@ array_push($_SESSION['cart_items'], isset($_POST['add_to_cart']));
 <script src="script.js"></script>
 </body>
 
-</html>
 
-<!-- https://www.youtube.com/watch?v=0wYSviHeRbs&t=1s -->
+
+</html>
