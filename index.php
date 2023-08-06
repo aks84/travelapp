@@ -3,8 +3,6 @@
 $ip = $_SERVER['REMOTE_ADDR'];
 $db = new mysqli('localhost', 'root', '', 'travelapp');
 
-
-
 // Check for errors
 if (mysqli_connect_errno()) {
 	echo mysqli_connect_error();
@@ -39,7 +37,7 @@ if (empty($_SESSION['cart_items'])) {
 			</div>
 			<div class="cart_div">
 			
-				<div class="cart" id="cart"><h3 id="cart_quantity"><?php echo count($_SESSION['cart_items']); ?></h3></div>
+				<div class="cart" id="cart"><h3 id="cart_quantity"><?php $cart_counted = count($_SESSION['cart_items']); echo $cart_counted + 1; ?></h3></div>
 			</div>
 	
 
@@ -52,18 +50,39 @@ if (empty($_SESSION['cart_items'])) {
 	</header>
 
 			<div class="cart_details" id="cart_details">
-				<h2>Visible only on cart-click</h2>
-				<h2>Visible only on cart-click</h2>
-				<h2>Visible only on cart-click</h2>
-				<h2>Visible only on cart-click</h2>
-				<h2>Visible only on cart-click</h2>
-				<h2>Visible only on cart-click</h2>
-				<h2>Visible only on cart-click</h2>
-				<h2>Visible only on cart-click</h2>
-				<h2>Visible only on cart-click</h2>
-				<h2>Visible only on cart-click</h2>
-				<h2>Visible only on cart-click</h2>
-				<div class="empty_cart"><input type="submit" value="Empty Cart"></div>
+				<table id="cart_packages">
+					<tr>
+						<th>Package</th>
+						<th>Dapartures</th>
+						<th>Quantity</th>
+						<th>For</th>
+						<th>Price</th>
+					</tr>
+					
+		<?php 
+						if ($_SESSION['cart_items']) {
+						$card_item_ids = implode(',', $_SESSION['cart_items']);
+						$cart_item_rows = $db->query("SELECT * FROM travels WHERE id in ($card_item_ids)");
+						while ($cart_item_row = $cart_item_rows->fetch_assoc()) { ?>
+							<tr>
+						<td><?php echo "{$cart_item_row['froms']} to {$cart_item_row['tos']} {$cart_item_row['vehicle_type']}"; ?></td>
+						<td><?php echo "{$cart_item_row['d_date']}"; ?></td>
+						<td><?php echo "{$cart_item_row['froms']}"; ?></td>
+						<td><?php echo "{$cart_item_row['persons']} Persons"; ?></td>
+						<td><?php echo "{$cart_item_row['price']}"; ?></td>
+						</tr>
+					 <?php }	}
+
+					 if (isset($_POST['empty_cart'])) {
+					 	   unset($_SESSION['cart_items']);				 	
+					 }
+					?>
+					
+				</table>
+
+				<from method="POST" action="index.php">
+					<input type="submit"  name="empty_cart" value="Empty Cart">
+				</from>
 
 			</div>
 	<main>
@@ -105,7 +124,7 @@ if (empty($_SESSION['cart_items'])) {
 		</div>
 
 			
-		<input type="submit" value="SEARCH PACKAGES">
+		<input type="submit" name='multi_search'value="SEARCH PACKAGES">
 		
 	</form>
 </section>
@@ -116,14 +135,13 @@ if (!empty($_POST['product_quantity'])) {
 	if (isset($_POST['add_to_cart'])) {
 		$current_id = $_POST['product_id'];
 		$current_q = $_POST['product_quantity'];
-
 		$cart_insertable = $db->query("SELECT * FROM travels WHERE id={$current_id}");
 		while ($cart_row = $cart_insertable->fetch_assoc()) { 
-			echo ucwords("Title: {$cart_row['froms']} to {$cart_row['tos']} {$cart_row['vehicle_type']}")." <br> Price: {$cart_row['price']} <br> Quantity:  $current_q  <br> Total Price: ". ($cart_row['price'] * $current_q) + 100 ."<br>";
-			array_push($_SESSION['cart_items']);
+			array_push($_SESSION['cart_items'],$current_id);
+			// echo ucwords("Title: {$cart_row['froms']} to {$cart_row['tos']} {$cart_row['vehicle_type']}")." <br> Price: {$cart_row['price']} <br> Quantity:  $current_q  <br> Total Price: ". ($cart_row['price'] * $current_q) + 100 ."<br>";
 		}
 		
-		echo "You clicked travel ID : {$current_id} and quantity was : {$current_q} <br>";
+		// echo "You clicked travel ID : {$current_id} and quantity was : {$current_q} <br>";
 	}
 
 }
@@ -132,6 +150,7 @@ if (!empty($_POST['product_quantity'])) {
 
 <section class="all_products">
    <?php 
+
    $rows = $db->query("SELECT * FROM `travels` ORDER BY id ASC");
    while ($row = $rows->fetch_assoc()) { ?>
   <div class="product_card">
@@ -145,7 +164,6 @@ if (!empty($_POST['product_quantity'])) {
 	     <h3 class="card_price">&#8377; <?php echo $row["price"];?></h3>
 	     <input type="number" name="product_quantity" min="1" max="10" value="1">
 	     <input type="hidden" name="product_id" value="<?php echo $row["id"];?>">
-	     <!-- <input type="hidden" name="product_price" value="<?php echo $row["price"];?>"> -->
 	     <input type="submit" name="add_to_cart" value="Add to Cart">
      </form>
 
@@ -160,7 +178,9 @@ if (!empty($_POST['product_quantity'])) {
 	<?php 
 
 print_r($_SESSION['cart_items']);
-// unset($_SESSION['cart_items']); ?>
+// unset($_SESSION['cart_items']); 
+session_destroy();
+?>
 
 
 
@@ -182,3 +202,4 @@ print_r($_SESSION['cart_items']);
 
 
 </html>
+<!-- https://www.youtube.com/watch?v=gZ65_NyXhI8 -->
