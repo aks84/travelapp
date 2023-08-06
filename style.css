@@ -84,14 +84,14 @@ footer{
     right: 5px;
     bottom: 10px;
     z-index: 100;
-    width: 400px;
+    width: 600px;
     height: 85vh;
     float: right;
     border: 2px solid brown;
     padding: 10px;
     margin-top: 36px;
     border-radius: 5px;
-    background-color: saddlebrown;
+    background-color: #63a4bf;
     color: azure;
  
 }
@@ -148,3 +148,26 @@ footer{
 
 }
 
+
+#cart_packages {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#cart_packages td, #cart_packages th {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+
+#cart_packages tr:nth-child(even){background-color: #795656;}
+
+#cart_packages tr:hover {background-color: dimgray;}
+
+#cart_packages th {
+  padding-top: 12px;
+  padding-bottom: 12px;
+  text-align: left;
+  background-color: #3a7e93;
+  color: white;
+}
