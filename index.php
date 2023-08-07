@@ -13,7 +13,6 @@ if (empty($_SESSION['cart_items'])) {
 	$_SESSION['cart_items'] = array();
 }
 
-// array_push($_SESSION['cart_items'], isset($_POST['add_to_cart']));
 
 
 
@@ -85,17 +84,16 @@ if (empty($_SESSION['cart_items'])) {
 				</from>
 
 			</div>
-	<main>
+<main>
 <section class="search_products">
 	<form class="search_form" action="index.php">
-
 		<div class="search_child" >
 			<label for="froms">From:</label>
 			<select name="froms" id="froms">
 				<?php 
 				$froms_rows = $db->query("SELECT DISTINCT froms FROM travels;");
 				while ($from_row = $froms_rows->fetch_assoc()) { ?>
-			  	<option value="<?php echo strtoupper($from_row["froms"]); ?>"><?php echo strtoupper($from_row["froms"]); ?></option>
+			  	<option value="<?php echo $from_row["froms"]; ?>"><?php echo $from_row["froms"]; ?></option>
 				<?php } ?>
 			 
 			</select>
@@ -107,7 +105,7 @@ if (empty($_SESSION['cart_items'])) {
 				<?php 
 				$tos_rows = $db->query("SELECT DISTINCT tos FROM travels;");
 				while ($tos_row = $tos_rows->fetch_assoc()) { ?>
-			 		<option value="<?php echo strtoupper($tos_row["tos"]); ?>"><?php echo strtoupper($tos_row["tos"]); ?></option>
+			 		<option value="<?php echo $tos_row["tos"]; ?>"><?php echo $tos_row["tos"]; ?></option>
 				<?php } ?>
 			</select>
 		</div>
@@ -150,25 +148,51 @@ if (!empty($_POST['product_quantity'])) {
 
 <section class="all_products">
    <?php 
+ 
+   if(isset($_GET['multi_search'])) {
+   	  $froms_value = $_GET['froms'];
+   		$tos_value = $_GET['tos'];
+   		$date_value = $_GET['d_date'];
+   	// echo "{$froms_value} {$tos_value} {$date_value}";
+   	$searche_rows = $db->query("SELECT * FROM travels WHERE froms = '$froms_value' AND tos = '$tos_value' AND d_date = '$date_value'");
 
-   $rows = $db->query("SELECT * FROM `travels` ORDER BY id ASC");
-   while ($row = $rows->fetch_assoc()) { ?>
-  <div class="product_card">
-  	<h3 class="product_title"><?php echo ucwords("{$row["froms"]} to {$row["tos"]} {$row["vehicle_type"]}"); ?></h3>
-     <img src="img/<?php echo $row["thumbnail"];?>"/>
+   	while ($search_row = $searche_rows->fetch_assoc()) { ?>
+	  <div class="product_card">
+	  	<h3 class="product_title"><?php echo ucwords("{$search_row["froms"]} to {$search_row["tos"]} {$search_row["vehicle_type"]}"); ?></h3>
+	     <img src="img/<?php echo $search_row["thumbnail"];?>"/>
 
-     <form class="card_details" method="POST" action="index.php">
-	     <p><b>Departures:</b> <?php echo $row["d_date"];?></p>
-	     <p><b>Arrives:</b> <?php echo $row["a_date"];?></p>
-	     <p><b>For:</b> <?php echo $row["persons"];?> Persons</p>
-	     <h3 class="card_price">&#8377; <?php echo $row["price"];?></h3>
-	     <input type="number" name="product_quantity" min="1" max="10" value="1">
-	     <input type="hidden" name="product_id" value="<?php echo $row["id"];?>">
-	     <input type="submit" name="add_to_cart" value="Add to Cart">
-     </form>
+	     <form class="card_details" method="POST" action="index.php">
+		     <p><b>Departures:</b> <?php echo $search_row["d_date"];?></p>
+		     <p><b>Arrives:</b> <?php echo $search_row["a_date"];?></p>
+		     <p><b>For:</b> <?php echo $search_row["persons"];?> Persons</p>
+		     <h3 class="card_price">&#8377; <?php echo $search_row["price"];?></h3>
+		     <input type="number" name="product_quantity" min="1" max="10" value="1">
+		     <input type="hidden" name="product_id" value="<?php echo $search_row["id"];?>">
+		     <input type="submit" name="add_to_cart" value="Add to Cart">
+	     </form>
+	   </div>
 
-   </div>
-   <?php } ?>
+   <?php } // search while loop ends here
+   } else {
+   	   
+	   $rows = $db->query("SELECT * FROM `travels` ORDER BY id ASC");
+	   while ($row = $rows->fetch_assoc()) { ?>
+	  <div class="product_card">
+	  	<h3 class="product_title"><?php echo ucwords("{$row["froms"]} to {$row["tos"]} {$row["vehicle_type"]}"); ?></h3>
+	     <img src="img/<?php echo $row["thumbnail"];?>"/>
+
+	     <form class="card_details" method="POST" action="index.php">
+		     <p><b>Departures:</b> <?php echo $row["d_date"];?></p>
+		     <p><b>Arrives:</b> <?php echo $row["a_date"];?></p>
+		     <p><b>For:</b> <?php echo $row["persons"];?> Persons</p>
+		     <h3 class="card_price">&#8377; <?php echo $row["price"];?></h3>
+		     <input type="number" name="product_quantity" min="1" max="10" value="1">
+		     <input type="hidden" name="product_id" value="<?php echo $row["id"];?>">
+		     <input type="submit" name="add_to_cart" value="Add to Cart">
+	     </form>
+
+	   </div>
+   <?php } }?>
 
 </section>
 
@@ -179,7 +203,7 @@ if (!empty($_POST['product_quantity'])) {
 
 print_r($_SESSION['cart_items']);
 // unset($_SESSION['cart_items']); 
-session_destroy();
+// session_destroy();
 ?>
 
 
