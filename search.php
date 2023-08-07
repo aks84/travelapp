@@ -21,8 +21,7 @@ if (empty($_SESSION['cart_items'])) {
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="style.css">
-	<link rel="stylesheet" href="frontend.css">
-	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 	<title>Travel App</title>
 </head>
 
@@ -31,16 +30,18 @@ if (empty($_SESSION['cart_items'])) {
 		<div class="header">
 			<div class="logowrapper">
 				<div class="logo_div">
-					<a href="/"><img src="img/logo1.png" alt="travel app"></a>
+					<a href="/"><img src="img/logo.png" alt="travel app"></a>
 				</div>
 				<div class="cart_div">
 					<div class="cart" id="cart">
-						<span id="cart_quantity"><?php echo count($_SESSION['cart_items']); ?></span>
+						<h3 id="cart_quantity"><?php echo count($_SESSION['cart_items']); ?></h3>
 					</div>
 				</div>
 			</div>
-			<div class="travel_package">
-				<a href="/"><img src="img/travel_package.png" alt=""></a>
+			<div class="nav">
+				<ul>
+					<li><a href="/">Travel Packages</a></li>
+				</ul>
 			</div>
 		</div>
 
@@ -155,23 +156,6 @@ if (empty($_SESSION['cart_items'])) {
 
 	<div class="main_section">
 
-		<div class="dot-slider">
-			<div class="slider-container">
-				<div class="slider">
-					<div class="slide"><img src="img/slideigm1.png" alt="Image 1"></div>
-					<div class="slide"><img src="img/slideigm2.png" alt="Image 2"></div>
-					<div class="slide"><img src="img/slideigm3.png" alt="Image 3"></div>
-				</div>
-				<button class="prev-btn">&#10094;</button>
-				<button class="next-btn">&#10095;</button>
-			</div>
-			<div class="dots-container">
-				<div class="dot"></div>
-				<div class="dot"></div>
-				<div class="dot"></div>
-			</div>
-		</div>
-
 
 		<?php // INSERT INTO CART 
 		if (!empty($_POST['product_quantity'])) {
@@ -258,34 +242,6 @@ if (empty($_SESSION['cart_items'])) {
 
 		</section>
 
-		<div class="tourcards">
-			<div style="margin-left: 15px;" class="tourcard">
-				<img src="img/kashmir.avif" alt="">
-				<span>Kashmir</span>
-				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores, nulla.</p>
-			</div>
-			<div class="tourcard">
-				<img src="img/andaman.avif" alt="">
-				<span>Andaman</span>
-				<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem, modi?</p>
-			</div>
-			<div class="tourcard">
-				<img src="img/ladakh.avif" alt="">
-				<span>Ladakh</span>
-				<p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veniam, pariatur.</p>
-			</div>
-			<div class="tourcard">
-				<img src="img/goa.avif" alt="">
-				<span>Goa</span>
-				<p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quidem, mollitia!</p>
-			</div>
-			<div class="tourcard">
-				<img src="img/northeast.avif" alt="">
-				<span>North East</span>
-				<p>Lorem, ipsum dolor sit, amet consectetur adipisicing elit. Incidunt, odio.</p>
-			</div>
-		</div>
-
 	</div>
 
 
@@ -299,21 +255,18 @@ if (empty($_SESSION['cart_items'])) {
 
 
 	<footer>
-
 		<div class="copyright">
 			<p>&copy; 2020-2023 @travelapp - all rights reserved.</p>
 		</div>
 		<div class="getsocial">
-			<div class="social"><a href="#social">f</a></div>
-			<div class="social"><a href="#social">t</a></div>
-			<div class="social"><a href="#social">p</a></div>
-			<div class="social"><a href="#social">Y</a></div>
+			<a href="#"></a>
+			<a href="#"></a>
+			<a href="#"></a>
+			<a href="#"></a>
 		</div>
-		<div class="footer_top"></div>
 	</footer>
 
 	<script src="script.js"></script>
-	<script src="frontend.js"></script>
 </body>
 
 </html>
