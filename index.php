@@ -10,7 +10,7 @@ if (mysqli_connect_errno()) {
 
 // CART ARRAY
 if (empty($_SESSION['cart_items'])) {
-	$_SESSION['cart_items'] = array();
+	$_SESSION['cart_items'] = [];
 }
 
 
@@ -48,34 +48,50 @@ if (empty($_SESSION['cart_items'])) {
 		</nav>
 	</header>
 
+
+	<div class="notice_box">
+		Your package added successfully.
+	</div>
+
 			<div class="cart_details" id="cart_details">
 				<table id="cart_packages">
 					<tr>
 						<th>Package</th>
-						<th>Dapartures</th>
+						<th>SKU</th>
 						<th>Quantity</th>
-						<th>For</th>
 						<th>Price</th>
+						<th>Total</th>
+						<th>Keep</th>
 					</tr>
 					
 		<?php 
-						if ($_SESSION['cart_items']) {
-						$card_item_ids = implode(',', $_SESSION['cart_items']);
-						$cart_item_rows = $db->query("SELECT * FROM travels WHERE id in ($card_item_ids)");
-						while ($cart_item_row = $cart_item_rows->fetch_assoc()) { ?>
-							<tr>
-						<td><?php echo "{$cart_item_row['froms']} to {$cart_item_row['tos']} {$cart_item_row['vehicle_type']}"; ?></td>
-						<td><?php echo "{$cart_item_row['d_date']}"; ?></td>
-						<td><?php echo "{$cart_item_row['froms']}"; ?></td>
-						<td><?php echo "{$cart_item_row['persons']} Persons"; ?></td>
-						<td><?php echo "{$cart_item_row['price']}"; ?></td>
-						</tr>
-					 <?php }	}
+		
+			foreach($_SESSION['cart_items'] as $c_item) {
+				$item_total =  $c_item['quantity'] * $c_item['price'];
+				// print_r($c_item);
+				?>
+				<tr>
+					<td><?php echo "{$c_item['name']}"; ?></td>
+					<td><?php echo "{$c_item['sku']}"; ?></td>
+					<td><?php echo "{$c_item['quantity']}"; ?></td>
+					<td><?php echo "{$c_item['price']}"; ?></td>
+					<td><?php echo number_format($item_total, decbin(1)); ?></td>
+					<form action="index.php" method="POST">
+						<td><input type="submit" name="remove_item" value="Remove"></td>
+					</form>
+				</tr>
 
-					 if (isset($_POST['empty_cart'])) {
-					 	   unset($_SESSION['cart_items']);				 	
-					 }
-					?>
+			<?php 	
+			if (isset($_POST['remove_item'])) {
+				unset($c_item);
+			}
+		}
+	
+
+
+		 if (isset($_POST['empty_cart'])) {
+			 	   unset($_SESSION['cart_items']);				 	
+		 } ?>
 					
 				</table>
 
@@ -127,19 +143,41 @@ if (empty($_SESSION['cart_items'])) {
 	</form>
 </section>
 
-<?php 
-
+<?php // INSERT INTO CART 
 if (!empty($_POST['product_quantity'])) {
 	if (isset($_POST['add_to_cart'])) {
 		$current_id = $_POST['product_id'];
-		$current_q = $_POST['product_quantity'];
+		$current_qnt = $_POST['product_quantity'];
 		$cart_insertable = $db->query("SELECT * FROM travels WHERE id={$current_id}");
 		while ($cart_row = $cart_insertable->fetch_assoc()) { 
-			array_push($_SESSION['cart_items'],$current_id);
+			$cart_item_array = [
+					$cart_row['SKU'] => [
+						"name" => "{$cart_row['froms']} to {$cart_row['tos']} {$cart_row['vehicle_type']}",
+						"sku" => "{$cart_row['SKU']}",
+						"quantity" => $current_qnt,
+						"price" => "{$cart_row['price']}"
+					]
+			];
+
+			if (!empty($_SESSION['cart_items'])) {
+				if (in_array($cart_row['SKU'], array_keys($_SESSION['cart_items']))) {
+					foreach($_SESSION['cart_items'] as $key => $value){
+						if ($cart_row['SKU'] == $key) {
+							$_SESSION['cart_items'][$key]['quantity'] += $current_qnt;
+						}
+					}
+				}else{
+					$_SESSION['cart_items'] += $cart_item_array;
+				}
+			}else{
+				$_SESSION['cart_items'] = $cart_item_array;
+			}
+
+			// array_push($_SESSION['cart_items'],$current_id);
 			// echo ucwords("Title: {$cart_row['froms']} to {$cart_row['tos']} {$cart_row['vehicle_type']}")." <br> Price: {$cart_row['price']} <br> Quantity:  $current_q  <br> Total Price: ". ($cart_row['price'] * $current_q) + 100 ."<br>";
 		}
 		
-		// echo "You clicked travel ID : {$current_id} and quantity was : {$current_q} <br>";
+		// echo "You clicked travel ID : {$current_id} and quantity was : {$current_qnt} <br>";
 	}
 
 }
@@ -147,9 +185,8 @@ if (!empty($_POST['product_quantity'])) {
  ?>
 
 <section class="all_products">
-   <?php 
- 
-   if(isset($_GET['multi_search'])) {
+   <?php  //Display cards when 'search package' is clicked
+    if(isset($_GET['multi_search'])) {
    	  $froms_value = $_GET['froms'];
    		$tos_value = $_GET['tos'];
    		$date_value = $_GET['d_date'];
@@ -172,9 +209,8 @@ if (!empty($_POST['product_quantity'])) {
 	     </form>
 	   </div>
 
-   <?php } // search while loop ends here
+   <?php } // multi search while loop ends here
    } else {
-   	   
 	   $rows = $db->query("SELECT * FROM `travels` ORDER BY id ASC");
 	   while ($row = $rows->fetch_assoc()) { ?>
 	  <div class="product_card">
