@@ -36,7 +36,7 @@ if (empty($_SESSION['cart_items'])) {
 			</div>
 			<div class="cart_div">
 			
-				<div class="cart" id="cart"><h3 id="cart_quantity"><?php $cart_counted = count($_SESSION['cart_items']); echo $cart_counted + 1; ?></h3></div>
+				<div class="cart" id="cart"><h3 id="cart_quantity"><?php echo count($_SESSION['cart_items']); ?></h3></div>
 			</div>
 	
 
@@ -81,10 +81,26 @@ if (empty($_SESSION['cart_items'])) {
 					</form>
 				</tr>
 
-			<?php 	
+			<?php
+
+
 			if (isset($_POST['remove_item'])) {
-				unset($c_item);
+					if (!empty($_SESSION['cart_items'])) {
+			foreach($_SESSION['cart_items'] as $key => $value) {
+			  if ($c_item['sku'] == $key) {
+			      unset($_SESSION['cart_items'][$key]);
+			  }
+			} 
+		
+			 
 			}
+			}
+			elseif (isset($_POST['empty_item'])) {
+				 if (empty($_SESSION['cart_items'])) {
+			      unset($_SESSION['cart_items']);
+			  }
+			} 	
+
 		}
 	
 
