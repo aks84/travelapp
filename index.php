@@ -214,23 +214,25 @@ if (empty($_SESSION['cart_items'])) {
 				$froms_value = $_GET['froms'];
 				$tos_value = $_GET['tos'];
 				$date_value = $_GET['d_date'];
-				// echo "{$froms_value} {$tos_value} {$date_value}";
 				$searche_rows = $db->query("SELECT * FROM travels WHERE froms = '$froms_value' AND tos = '$tos_value' AND d_date = '$date_value'");
 
 				while ($search_row = $searche_rows->fetch_assoc()) { ?>
+
+
 					<div class="product_card">
 						<img src="img/<?php echo $search_row["thumbnail"]; ?>" />
-						<h3 class="product_title"><?php echo ucwords("{$search_row["froms"]} to {$search_row["tos"]} {$search_row["vehicle_type"]}"); ?></h3>
+						<span class="product_title"><?php echo ucwords("{$search_row["froms"]}-{$search_row["tos"]} {$search_row["vehicle_type"]}"); ?></span>
 
 						<form class="card_details" method="POST">
-							<p><b>Departures:</b> <?php echo $search_row["d_date"]; ?></p>
-							<p><b>Arrives:</b> <?php echo $search_row["a_date"]; ?></p>
-							<p><b>For:</b> <?php echo $search_row["persons"]; ?> Persons</p>
-							<spand class="card_price">&#8377; <?php echo $search_row["price"]; ?></spand>
-							<input type="number" name="product_quantity" min="1" max="10" value="1">
+							<p class="card_text"><span>Departures:</span> <?php echo $search_row["d_date"]; ?></p>
+							<p class="card_text"><span>Arrives:</span> <?php echo $search_row["a_date"]; ?></p>
+							<p class="card_text"><span>For:</span> <?php echo $search_row["persons"]; ?> Persons</p>
+							<div class="card_price">&#8377; <?php echo $search_row["price"]; ?></div>
+							<input class="select_qty" type="number" name="product_quantity" min="1" max="10" value="1">
 							<input type="hidden" name="product_id" value="<?php echo $search_row["id"]; ?>">
-							<input type="submit" name="add_to_cart" value="Add to Cart">
+							<input class="cart_btn" type="submit" name="add_to_cart" value="Add to Cart">
 						</form>
+
 					</div>
 
 
@@ -240,7 +242,7 @@ if (empty($_SESSION['cart_items'])) {
 				while ($row = $rows->fetch_assoc()) { ?>
 					<div class="product_card">
 						<img src="img/<?php echo $row["thumbnail"]; ?>" />
-						<span class="product_title"><?php echo ucwords("{$row["froms"]} to {$row["tos"]} {$row["vehicle_type"]}"); ?></span>
+						<span class="product_title"><?php echo ucwords("{$row["froms"]}-{$row["tos"]} {$row["vehicle_type"]}"); ?></span>
 
 						<form class="card_details" method="POST">
 							<p class="card_text"><span>Departures:</span> <?php echo $row["d_date"]; ?></p>

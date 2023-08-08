@@ -164,9 +164,9 @@ footer {
 
 
 .search_form {
-  display: flex;
-  justify-content: flex-start;
-  flex-wrap: wrap;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
 }
 
 .search_child {
@@ -286,6 +286,10 @@ span.product_title {
     font-size: 19px;
     color: brown;
     letter-spacing: 1.4px;
+    overflow: hidden; 
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    display: inline-block;
 }
 
 .select_qty, .card_price{

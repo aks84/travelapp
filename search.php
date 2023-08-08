@@ -21,7 +21,8 @@ if (empty($_SESSION['cart_items'])) {
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="style.css">
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+	<link rel="stylesheet" href="frontend.css">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<title>Travel App</title>
 </head>
 
@@ -30,18 +31,16 @@ if (empty($_SESSION['cart_items'])) {
 		<div class="header">
 			<div class="logowrapper">
 				<div class="logo_div">
-					<a href="/"><img src="img/logo.png" alt="travel app"></a>
+					<a href="/"><img src="img/logo1.png" alt="travel app"></a>
 				</div>
 				<div class="cart_div">
 					<div class="cart" id="cart">
-						<h3 id="cart_quantity"><?php echo count($_SESSION['cart_items']); ?></h3>
+						<span id="cart_quantity"><?php echo count($_SESSION['cart_items']); ?></span>
 					</div>
 				</div>
 			</div>
-			<div class="nav">
-				<ul>
-					<li><a href="/">Travel Packages</a></li>
-				</ul>
+			<div class="travel_package">
+				<a href="/"><img src="img/travel_package.png" alt=""></a>
 			</div>
 		</div>
 
@@ -156,7 +155,6 @@ if (empty($_SESSION['cart_items'])) {
 
 	<div class="main_section">
 
-
 		<?php // INSERT INTO CART 
 		if (!empty($_POST['product_quantity'])) {
 			if (isset($_POST['add_to_cart'])) {
@@ -198,23 +196,25 @@ if (empty($_SESSION['cart_items'])) {
 				$froms_value = $_GET['froms'];
 				$tos_value = $_GET['tos'];
 				$date_value = $_GET['d_date'];
-				// echo "{$froms_value} {$tos_value} {$date_value}";
 				$searche_rows = $db->query("SELECT * FROM travels WHERE froms = '$froms_value' AND tos = '$tos_value' AND d_date = '$date_value'");
 
 				while ($search_row = $searche_rows->fetch_assoc()) { ?>
+
+
 					<div class="product_card">
-						<h3 class="product_title"><?php echo ucwords("{$search_row["froms"]} to {$search_row["tos"]} {$search_row["vehicle_type"]}"); ?></h3>
 						<img src="img/<?php echo $search_row["thumbnail"]; ?>" />
+						<span class="product_title"><?php echo ucwords("{$search_row["froms"]}-{$search_row["tos"]} {$search_row["vehicle_type"]}"); ?></span>
 
 						<form class="card_details" method="POST">
-							<p><b>Departures:</b> <?php echo $search_row["d_date"]; ?></p>
-							<p><b>Arrives:</b> <?php echo $search_row["a_date"]; ?></p>
-							<p><b>For:</b> <?php echo $search_row["persons"]; ?> Persons</p>
-							<h3 class="card_price">&#8377; <?php echo $search_row["price"]; ?></h3>
-							<input type="number" name="product_quantity" min="1" max="10" value="1">
+							<p class="card_text"><span>Departures:</span> <?php echo $search_row["d_date"]; ?></p>
+							<p class="card_text"><span>Arrives:</span> <?php echo $search_row["a_date"]; ?></p>
+							<p class="card_text"><span>For:</span> <?php echo $search_row["persons"]; ?> Persons</p>
+							<div class="card_price">&#8377; <?php echo $search_row["price"]; ?></div>
+							<input class="select_qty" type="number" name="product_quantity" min="1" max="10" value="1">
 							<input type="hidden" name="product_id" value="<?php echo $search_row["id"]; ?>">
-							<input type="submit" name="add_to_cart" value="Add to Cart">
+							<input class="cart_btn" type="submit" name="add_to_cart" value="Add to Cart">
 						</form>
+
 					</div>
 
 
@@ -223,17 +223,17 @@ if (empty($_SESSION['cart_items'])) {
 				$rows = $db->query("SELECT * FROM `travels` ORDER BY id ASC");
 				while ($row = $rows->fetch_assoc()) { ?>
 					<div class="product_card">
-						<h3 class="product_title"><?php echo ucwords("{$row["froms"]} to {$row["tos"]} {$row["vehicle_type"]}"); ?></h3>
 						<img src="img/<?php echo $row["thumbnail"]; ?>" />
+						<span class="product_title"><?php echo ucwords("{$row["froms"]}-{$row["tos"]} {$row["vehicle_type"]}"); ?></span>
 
 						<form class="card_details" method="POST">
-							<p><b>Departures:</b> <?php echo $row["d_date"]; ?></p>
-							<p><b>Arrives:</b> <?php echo $row["a_date"]; ?></p>
-							<p><b>For:</b> <?php echo $row["persons"]; ?> Persons</p>
-							<h3 class="card_price">&#8377; <?php echo $row["price"]; ?></h3>
-							<input type="number" name="product_quantity" min="1" max="10" value="1">
+							<p class="card_text"><span>Departures:</span> <?php echo $row["d_date"]; ?></p>
+							<p class="card_text"><span>Arrives:</span> <?php echo $row["a_date"]; ?></p>
+							<p class="card_text"><span>For:</span> <?php echo $row["persons"]; ?> Persons</p>
+							<div class="card_price">&#8377; <?php echo $row["price"]; ?></div>
+							<input class="select_qty" type="number" name="product_quantity" min="1" max="10" value="1">
 							<input type="hidden" name="product_id" value="<?php echo $row["id"]; ?>">
-							<input type="submit" name="add_to_cart" value="Add to Cart">
+							<input class="cart_btn" type="submit" name="add_to_cart" value="Add to Cart">
 						</form>
 
 					</div>
@@ -241,6 +241,52 @@ if (empty($_SESSION['cart_items'])) {
 			} ?>
 
 		</section>
+
+
+				<div class="dot-slider">
+			<div class="slider-container">
+				<div class="slider">
+					<div class="slide"><img src="img/slideigm1.png" alt="Image 1"></div>
+					<div class="slide"><img src="img/slideigm2.png" alt="Image 2"></div>
+					<div class="slide"><img src="img/slideigm3.png" alt="Image 3"></div>
+				</div>
+				<button class="prev-btn">&#10094;</button>
+				<button class="next-btn">&#10095;</button>
+			</div>
+			<div class="dots-container">
+				<div class="dot"></div>
+				<div class="dot"></div>
+				<div class="dot"></div>
+			</div>
+		</div>
+
+		<div class="tourcards">
+			<div style="margin-left: 15px;" class="tourcard">
+				<img src="img/kashmir.avif" alt="">
+				<span>Kashmir</span>
+				<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Maiores, nulla.</p>
+			</div>
+			<div class="tourcard">
+				<img src="img/andaman.avif" alt="">
+				<span>Andaman</span>
+				<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Rem, modi?</p>
+			</div>
+			<div class="tourcard">
+				<img src="img/ladakh.avif" alt="">
+				<span>Ladakh</span>
+				<p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Veniam, pariatur.</p>
+			</div>
+			<div class="tourcard">
+				<img src="img/goa.avif" alt="">
+				<span>Goa</span>
+				<p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Quidem, mollitia!</p>
+			</div>
+			<div class="tourcard">
+				<img src="img/northeast.avif" alt="">
+				<span>North East</span>
+				<p>Lorem, ipsum dolor sit, amet consectetur adipisicing elit. Incidunt, odio.</p>
+			</div>
+		</div>
 
 	</div>
 
@@ -255,18 +301,21 @@ if (empty($_SESSION['cart_items'])) {
 
 
 	<footer>
+
 		<div class="copyright">
 			<p>&copy; 2020-2023 @travelapp - all rights reserved.</p>
 		</div>
 		<div class="getsocial">
-			<a href="#"></a>
-			<a href="#"></a>
-			<a href="#"></a>
-			<a href="#"></a>
+			<div class="social"><a href="#social">f</a></div>
+			<div class="social"><a href="#social">t</a></div>
+			<div class="social"><a href="#social">p</a></div>
+			<div class="social"><a href="#social">Y</a></div>
 		</div>
+		<div class="footer_top"></div>
 	</footer>
 
 	<script src="script.js"></script>
+	<script src="frontend.js"></script>
 </body>
 
 </html>
